@@ -52,6 +52,12 @@
             text/css css;
           }
         }
+
+        location ~* \.svg$ {
+          types {
+            image/svg+xml svg;
+          }
+        }
       }
     }
     '';
