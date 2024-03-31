@@ -29,7 +29,7 @@
           try_files $uri $uri/ /index.php?$args;
         }
 
-        location ~ \.php$ {
+        location ~* \.php$ {
           root ${projectRoot};
           #NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
           fastcgi_split_path_info ^(.+?\.php)(/.*)$;
@@ -56,6 +56,12 @@
         location ~* \.svg$ {
           types {
             image/svg+xml svg;
+          }
+        }
+
+        location ~* \.js$ {
+          types {
+            text/javascript js;
           }
         }
       }
