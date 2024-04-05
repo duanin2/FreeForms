@@ -486,7 +486,9 @@ addEventListener("resize", (event) => {
 });
 
 function newNode() {
-	nodes.push(new Node(width / 2 - 70, height / 2 - 20, "Question"));
+	let idx = nodes.push(new Node(width / 2 - 70, height / 2 - 20, "Question")) - 1;
+  connectors.push(new Connector("input", "Default"));
+	nodes[1].ownConnector(idx);
 }
 
 function renameNode() {
