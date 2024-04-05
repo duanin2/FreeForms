@@ -6,7 +6,7 @@ htmlHead("Editor formuláře", array(
 	array(
 		"element" => "script",
 		"params" => array(
-			"src" => "/lib/sketch.js"
+			"src" => "./lib/sketch.js"
 		)
 	)
 ));
@@ -76,7 +76,7 @@ htmlHead("Editor formuláře", array(
 						<td><input type="button" value="Přejmenovat" onclick="renameNode()" id="selectedRename" hidden></td>
 						<td><select name="options" id="options" onchange="selectOption()" hidden></select></td>
 						<td><input type="text" name="option" id="option" hidden></td>
-						<td><input type="button" value="Přidat/Přejmenovat Možnost" id="renameOption" onclick="renameOption()" hidden></td>
+						<td><input type="button" value="Přidat/Přejmenovat Možnost" id="renameOption" onclick="globalThis.renameOption()" hidden></td>
 					</tr>
 				</table>
 			</form>

@@ -75,7 +75,12 @@ function htmlTags(int $offset = 0, array $content = []) {
 
 $defaultScheme = "latte";
 
-$accesses = (int)file_get_contents($accessCountPath) ?? 0;
+try {
+	$accesses = (int) file_get_contents($accessCountPath);
+} catch(e) {
+	$accesses = 0;
+	file_put_contents($accessCountPath, $accesses);
+}
 if (isset($_SESSION["accessed"]) != true) {
 	$accesses += 1;
 	file_put_contents($accessCountPath, $accesses);
@@ -102,28 +107,28 @@ if (isset($_GET["logout"])) {
 	unset($_SESSION["scheme"]);
 	unset($_SESSION["isAdmin"]);
 
-	header("Location: /");
+	header("Location: ./");
 }
 
 $buttons = array(
 	"register" => array(
-		"href" => "/register.php",
+		"href" => "./register.php",
 		"content" => "Zaregistrovat se"
 	),
 	"login" => array(
-		"href" => "/login.php",
+		"href" => "./login.php",
 		"content" => "Přihlásit se"
 	),
 	"logout" => array(
-		"href" => "?logout",
+		"href" => "./?logout",
 		"content" => "Odhlásit se"
 	),
 	"userdata" => array(
-		"href" => "/userdata.php",
+		"href" => "./userdata.php",
 		"content" => $_SESSION["username"] ?? ""
 	),
 	"forms" => array(
-		"href" => "/fileList.php",
+		"href" => "./fileList.php",
 		"content" => "Formuláře"
 	)
 );
@@ -219,14 +224,14 @@ function htmlHead(string $title, array $extraTags = []) {
 				"element" => "link",
 				"params" => array(
 					"rel" => "stylesheet",
-					"href" => "/lib/main.css.php?scheme=$scheme"
+					"href" => "./lib/main.css.php?scheme=$scheme"
 				)
 			),
 			array(
 				"element" => "link",
 				"params" => array(
 					"rel" => "icon",
-					"href" => "/img/icon.svg"
+					"href" => "./img/icon.svg"
 				)
 			),
 			array(
@@ -275,13 +280,13 @@ function htmlHeader($excludedButtons = []) {
 					array(
 						"element" => "a",
 						"params" => array(
-							"href" => "/"
+							"href" => "./"
 						),
 						"content" => array(
 							array(
 								"element" => "img",
 								"params" => array(
-									"src" => "/img/icon.svg",
+									"src" => "./img/icon.svg",
 									"alt" => "FreeForms logo"
 								)
 							)

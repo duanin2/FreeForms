@@ -1,3 +1,5 @@
+"use strict";
+
 let connectors = [];
 let connections = [];
 let nodes = [];

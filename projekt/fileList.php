@@ -27,7 +27,7 @@
 						}
 					}
 				} else {
-					header("Location: /");
+					header("Location: ./");
 				}
 
 				function formTagsDefine() {
@@ -77,7 +77,7 @@
 										array(
 											"element" => "a",
 											"params" => array(
-												"href" => "/fileEdit.php?id=" . $content["id"]
+												"href" => "./fileEdit.php?id=" . $content["id"]
 											),
 											"content" => "Upravit"
 										)
@@ -89,7 +89,7 @@
 										array(
 											"element" => "a",
 											"params" => array(
-												"href" => "/fileDelete.php?id=" . $content["id"]
+												"href" => "./fileDelete.php?id=" . $content["id"]
 											),
 											"content" => "Smazat"
 										)
@@ -107,7 +107,7 @@
 				formTags($sharedTags, $sharedContent);
 			?>
 			<h1>Formuláře</h1>
-			<a href="/fileEdit.php">Vytvořit nový formulář</a>
+			<a href="./fileEdit.php">Vytvořit nový formulář</a>
 <?php
 	if ($sharedTags !== formTagsDefine()) {
 		echo htmlTags(3, array(
