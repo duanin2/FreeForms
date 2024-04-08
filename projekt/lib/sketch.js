@@ -278,7 +278,8 @@ class Node {
     this.#ownedConnectors.push(connectorIdx);
   }
   disownConnector(connectorIdx) {
-    connectors[connectorIdx].disown(this.idx);
+    let idx = this.#ownedConnectors[connectorIdx].idx;
+    connectors[idx].disown(this.idx);
     this.#ownedConnectors = removeIdx(this.#ownedConnectors, connectorIdx);
   }
 
@@ -326,10 +327,18 @@ class Node {
 		return this.#options;
 	}
 	addOption(option) {
-		this.#options.push(new Option(option));
+    this.#height = headerHeight * max(this.#options.length + 1, 2);
+    let idx = connectors.push(new Connector("output", option));
+    this.#options.push(new Option(option, idx));
+    this.ownConnector(idx);
 	}
 	removeOption(optionIdx) {
+    let connectorIdx = this.#options[optionIdx].connectorIdx;
+    let globalConnectorIdx = this.#ownedConnectors[connectorIdx];
 		this.#options = removeIdx(this.#options, optionIdx);
+    this.#height = headerHeight * max(this.#options.length + 1, 2);
+    this.disownConnector(connectorIdx);
+    connectors = removeIdx(connectors, globalConnectorIdx);
 	}
 	get SelectedOption() {
 		return this.#selectedOption;
@@ -486,9 +495,9 @@ addEventListener("resize", (event) => {
 });
 
 function newNode() {
-	let idx = nodes.push(new Node(width / 2 - 70, height / 2 - 20, "Question")) - 1;
-  connectors.push(new Connector("input", "Default"));
-	nodes[1].ownConnector(idx);
+	let nodeIdx = nodes.push(new Node(width / 2 - 70, height / 2 - 20, "Question")) - 1;
+  let connectorIdx = connectors.push(new Connector("input", "Default")) - 1;
+	nodes[nodeIdx].ownConnector(connectorIdx);
 }
 
 function renameNode() {
