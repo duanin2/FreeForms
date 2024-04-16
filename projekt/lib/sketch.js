@@ -6,12 +6,6 @@ let nodes = [];
 
 let selectedNode;
 
-let selected,
-		options,
-		rename,
-		option,
-		optionRename;
-
 let startConnector;
 let endConnector;
 
@@ -438,48 +432,6 @@ function mouseClicked() {
     startConnector = undefined;
     endConnector = undefined;
   }
-
-	let wasSelected = false;
-
-	for (let i = 0; i < nodes.length; i++) {
-    if (nodes[i].isHoveringHeader(mouseX, mouseY)) {
-      selectedNode = i;
-			wasSelected = true;
-			break;
-    }
-  }
-
-	if (!wasSelected || selectedNode <= 1) {
-		options.hidden = true;
-		selected.hidden = true;
-		rename.hidden = true;
-		option.hidden = true;
-		optionRename.hidden = true;
-
-		options.innerHTML = "";
-		option.value = "";
-		selectedNode = undefined;
-	} else {
-		options.hidden = false;
-		selected.hidden = false;
-		rename.hidden = false;
-		option.hidden = false;
-		optionRename.hidden = false;
-
-		selected.value = nodes[selectedNode].Name;
-		const nodeOptions = nodes[selectedNode].Options;
-		for (let i = -1; i < nodeOptions.length; i++) {
-			let loopOption = document.createElement("option");
-			loopOption.value = i;
-			if (i == -1) {
-				loopOption.innerHTML = "None";
-				loopOption.selected = true;
-			} else {
-				loopOption.innerHTML = nodeOptions[i].Name;
-			}
-			options.appendChild(loopOption);
-		}
-	}
   
   if (startConnector != undefined && endConnector != undefined) {
     connections.push(new Connection(startConnector, endConnector));
@@ -489,8 +441,8 @@ function mouseClicked() {
 }
 
 addEventListener("resize", (event) => {
-	width = documentWidth() * 0.95 - 40;
-	height = documentHeight() - documentHeight() * 0.20 - 70;
+	width = floor(documentWidth() * 0.95 - 40);
+	height = floor(documentHeight() - (documentHeight() * 0.20) - 40);
 	resizeCanvas(width, height);
 });
 
@@ -507,19 +459,19 @@ function renameNode() {
 function selectOption() {
 	const nodeOptions = nodes[selectedNode].Options;
 
-	if (options.value != -1) {
+	/*if (options.value != -1) {
 		option.value = nodeOptions[options.value].Name;
-	}
+	}*/
 }
 
 function renameOption() {
-	if (options.value == -1) {
+	/*if (options.value == -1) {
 		nodes[selectedNode].addOption(option.value);
 	} else {
 		nodes[selectedNode].Options[options.value].Name = option.value;
-	}
+	}*/
 
-	options.innerHTML = "";
+	/*options.innerHTML = "";
 	const nodeOptions = nodes[selectedNode].Options;
 	for (let i = -1; i < nodeOptions.length; i++) {
 		let loopOption = document.createElement("option");
@@ -531,5 +483,5 @@ function renameOption() {
 			loopOption.innerHTML = nodeOptions[i].Name;
 		}
 		options.appendChild(loopOption);
-	}
+	}*/
 }

@@ -11,7 +11,7 @@ htmlHead("Editor formuláře", array(
 	)
 ));
 ?>
-	<body onload="redraw()">
+	<body>
 <?php 
 	if ($isLoggedIn) {
 		htmlHeader(["login", "register"]);
@@ -52,7 +52,7 @@ htmlHead("Editor formuláře", array(
 				}
 				save_db($contentdb_location, $contentDB);
 
-				header("Location: /fileEdit.php?id=$contentId");
+				header("Location: ./fileEdit.php?id=$contentId");
 			}
 
 			$content = [];
@@ -65,21 +65,6 @@ htmlHead("Editor formuláře", array(
 				}
 			}
 			?>
-
-			<form action="#" method="post">
-				<table>
-					<tr>
-						<td><input type="text" name="name" id="name" value="<?php if ($contentId !== "") echo $content["name"]; ?>"></td>
-						<td><input type="submit" name="save" value="Uložit"></td>
-						<td><input type="button" value="Nová otázka" onclick="newNode()"></td>
-						<td><input type="text" name="nodeName" id="selected" hidden></td>
-						<td><input type="button" value="Přejmenovat" onclick="renameNode()" id="selectedRename" hidden></td>
-						<td><select name="options" id="options" onchange="selectOption()" hidden></select></td>
-						<td><input type="text" name="option" id="option" hidden></td>
-						<td><input type="button" value="Přidat/Přejmenovat Možnost" id="renameOption" onclick="globalThis.renameOption()" hidden></td>
-					</tr>
-				</table>
-			</form>
 			<canvas id="p5jsCanvas"></canvas>
 		</main>
 <?php htmlFooter(); ?>

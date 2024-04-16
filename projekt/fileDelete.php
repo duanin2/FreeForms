@@ -15,6 +15,6 @@ if ($id !== "") {
 
 	save_db($contentdb_location, $contentDB);
 
-	header("Location: /fileList.php");
+	header("Location: ./fileList.php");
 }
 ?>
