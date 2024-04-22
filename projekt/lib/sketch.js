@@ -5,6 +5,7 @@ let connections = [];
 let nodes = [];
 
 let selectedNode;
+let draggedNode;
 
 let startConnector;
 let endConnector;
@@ -347,12 +348,6 @@ function setup() {
 	height = documentHeight() - documentHeight() * 0.20 - 70;
   createCanvas(width, height, document.getElementById('p5jsCanvas'));
 
-	selected = document.getElementById('selected');
-	options = document.getElementById('options');
-	rename = document.getElementById('selectedRename');
-	option = document.getElementById('option');
-	optionRename = document.getElementById('renameOption');
-
 	// Start node
 	nodes.push(new Node(70, height / 2 - 20, "Start"));
 	connectors.push(new Connector("output", "Start"));
@@ -400,13 +395,31 @@ function draw() {
 }
 
 function mouseDragged() {
+  let isBeingDragged = false;
   for (let i = 0; i < nodes.length; i++) {
-    if (nodes[i].isHoveringHeader(mouseX - movedX, mouseY - movedY)) {
-      nodes[i].X += movedX;
-      nodes[i].Y += movedY;
-      
-      break;
+    if (draggedNode != undefined) {
+      if (nodes[draggedNode].isHoveringHeader(mouseX - movedX, mouseY - movedY) && i == draggedNode) {
+        nodes[i].X += movedX;
+        nodes[i].Y += movedY;
+
+        isBeingDragged = true;
+        
+        break;
+      }
+    } else {
+      if (nodes[i].isHoveringHeader(mouseX - movedX, mouseY - movedY)) {
+        nodes[i].X += movedX;
+        nodes[i].Y += movedY;
+        
+        isBeingDragged = true;
+        draggedNode = i;
+
+        break;
+      }
     }
+  }
+  if (!isBeingDragged) {
+    draggedNode = undefined;
   }
 }
 
