@@ -321,7 +321,7 @@ function htmlFooter() {
 					"class" => "copyright"
 				),
 				"content" => array(
-					"&copy; 2024-$year",
+					"&copy; 2024 – $year",
 					array(
 						"element" => "a",
 						"params" => array(

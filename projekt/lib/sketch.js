@@ -392,35 +392,37 @@ function draw() {
   } else if (endConnector != undefined) {
     line(connectors[endConnector].X, connectors[endConnector].Y, mouseX, mouseY);
   }
+
+  if (selectedNode != undefined) {
+    push();
+    fill(98, 104, 128);
+    noStroke();
+    rect(width/3*2,0,width/3,height);
+    pop();
+  }
 }
 
 function mouseDragged() {
-  let isBeingDragged = false;
   for (let i = 0; i < nodes.length; i++) {
     if (draggedNode != undefined) {
       if (nodes[draggedNode].isHoveringHeader(mouseX - movedX, mouseY - movedY) && i == draggedNode) {
         nodes[i].X += movedX;
         nodes[i].Y += movedY;
 
-        isBeingDragged = true;
-        
-        break;
+        return;
       }
     } else {
       if (nodes[i].isHoveringHeader(mouseX - movedX, mouseY - movedY)) {
         nodes[i].X += movedX;
         nodes[i].Y += movedY;
         
-        isBeingDragged = true;
         draggedNode = i;
 
         break;
       }
     }
   }
-  if (!isBeingDragged) {
-    draggedNode = undefined;
-  }
+  draggedNode = undefined;
 }
 
 function mouseClicked() {
@@ -428,8 +430,17 @@ function mouseClicked() {
 		return;
 	}
 
-  let clickedIn = false;
-  
+  for (let i = 0; i < nodes.length; i++) {
+    if (nodes[i].isHoveringHeader(mouseX, mouseY) || nodes[i].isHoveringBody(mouseX, mouseY) || ((mouseX > width/3*2 && mouseX < width) && (mouseY > 0 && mouseY < height))) {
+      if (i < 2) {
+        continue;
+      }
+      selectedNode = i;
+      return;
+    }
+  }
+  selectedNode = undefined;
+
   for (let i = 0; i < connectors.length; i++) {
     if (connectors[i].isHovering(mouseX, mouseY)) {
       clickedIn = true;
@@ -438,19 +449,18 @@ function mouseClicked() {
       } else {
         startConnector = i;
       }
+
+      if (startConnector != undefined && endConnector != undefined) {
+        connections.push(new Connection(startConnector, endConnector));
+        startConnector = undefined;
+        endConnector = undefined;
+      }
+
+      return;
     }
   }
-  
-  if (!clickedIn) {
-    startConnector = undefined;
-    endConnector = undefined;
-  }
-  
-  if (startConnector != undefined && endConnector != undefined) {
-    connections.push(new Connection(startConnector, endConnector));
-    startConnector = undefined;
-    endConnector = undefined;
-  }
+  startConnector = undefined;
+  endConnector = undefined;
 }
 
 addEventListener("resize", (event) => {
