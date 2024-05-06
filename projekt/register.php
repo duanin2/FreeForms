@@ -1,25 +1,15 @@
 <?php
 require_once "lib/common.php";
 
+$username = $_POST["username"] ?? "";
+$firstName = $_POST["firstName"] ?? "";
+$lastName = $_POST["lastName"] ?? "";
+$email = $_POST["email"] ?? "";
+$pass1 = $_POST["pass1"] ?? "";
+$pass2 = $_POST["pass2"] ?? "";
 if (count($_POST) != 0) {
-	$username = $_POST["username"];
-	$firstName = $_POST["firstName"];
-	$lastName = $_POST["lastName"];
-	$email = $_POST["email"];
-	$pass1 = $_POST["pass1"];
-	$pass2 = $_POST["pass2"];
-
 	$isPost = true;
-
-	$db = load_db($userdb_location);
 } else {
-	$username = "";
-	$firstName = "";
-	$lastName = "";
-	$email = "";
-	$pass1 = "";
-	$pass2 = "";
-
 	$isPost = false;
 }
 
@@ -178,8 +168,8 @@ $error = false;
 						<td><input type="submit" value="Zaregistrovat"></td>
 						<?php
 						if ($isPost && !$error) {
+							$newElemId = $username;
 							$newElem = array(
-								"username" => $username,
 								"firstName" => $firstName,
 								"lastName" => $lastName,
 								"email" => $email,
@@ -188,8 +178,8 @@ $error = false;
 								"isAdmin" => "false"
 							);
 
-							foreach ($db as $elem) {
-								if (($elem["username"] ?? "") === $newElem["username"]) {
+							foreach ($db["users"] as $key => $elem) {
+								if (($key ?? "") === $newElemId) {
 									$error_cur = "Uživatel již existuje.";
 									$error = true;
 									break;
@@ -201,12 +191,10 @@ $error = false;
 							}
 
 							if (!$error) {
-								array_push($db, $newElem);
-
-								save_db($userdb_location, $db);
+								$db["users"][$newElemId] = $newElem;
 								$_SESSION["username"] = $username;
 
-								header('Location: ./');
+								redirect('./');
 							} else {
 								echo "<td class=\"error\">$error_cur</td>";
 							}

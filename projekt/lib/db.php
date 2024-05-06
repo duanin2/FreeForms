@@ -6,7 +6,7 @@ function load_db($db_location) {
     if (!isset($db_location) or $db_location === "") {
         throw new Exception("Location cannot be empty.");
     } else if (!file_exists($db_location)) {
-        $contents = array();
+        $contents = serialize(array());
 
         try {
             file_put_contents($db_location, "");
@@ -19,33 +19,14 @@ function load_db($db_location) {
         throw new Exception("$db_location is a directory.");
     }
 
-    $contents = explode("\n", file_get_contents($db_location));
+    $contents = unserialize(file_get_contents($db_location));
 
-    $data = array();
-    foreach ($contents as $line) {
-        $line = explode(";", $line);
-        $dataLine = array();
-
-        foreach ($line as $pair) {
-            $keyValue = explode(":", $pair);
-
-            if (count($keyValue) != 2) {
-                continue;
-            }
-
-            $key = $keyValue[0];
-            $value = $keyValue[1];
-
-            $dataLine[$key] = $value;
-        }
-        array_push($data, $dataLine);
-    }
-
-    return $data;
+    return $contents;
 }
 
 # Saves loaded database $db_data into the file $db_location
 function save_db($db_location, $db_data) {
+    echo $db_location;
     if (!isset($db_location) or $db_location === "") {
         throw new Exception("Location cannot be empty.");
     } else if (!is_writeable($db_location)) {
@@ -54,24 +35,8 @@ function save_db($db_location, $db_data) {
         throw new Exception("$db_location is a directory.");
     }
 
-    $contents = "";
-
-    foreach ($db_data as $data) {
-        if ($data == array()) {
-            continue;
-        }
-        foreach ($data as $key => $value) {
-            if (!isset($key) || $key == "") {
-                continue;
-            }
-
-            $contents .= "$key:$value;";
-        }
-        $contents .= "\n";
-    }
-
     try {
-        file_put_contents($db_location, $contents);
+        file_put_contents($db_location, serialize($db_data));
     } catch (Exception $ex) {
         throw new Exception("Cannot create the database $db_location because '" . $ex->getMessage() . "'.");
     }

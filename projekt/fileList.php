@@ -12,14 +12,13 @@
 ?>
 		<main>
 			<?php
-				$contentDB = load_db($contentdb_location);
 				$username = $_SESSION["username"] ?? "";
 
 				$userContent = [];
 				$sharedContent = [];
 
 				if ($isLoggedIn) {
-					foreach ($contentDB as $content) {
+					foreach ($db["content"] as $content) {
 						if (($content["username"] ?? "") == $username) {
 							array_push($userContent, $content);
 						} elseif (array_search($username, $content["sharedWith"] ?? [])) {

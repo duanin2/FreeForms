@@ -8,8 +8,6 @@ if (count($_POST) != 0) {
 	$isPost = true;
 
 	$elem = array();
-
-	$db = load_db($userdb_location);
 } else {
 	$username = "";
 	$pass = "";
@@ -38,7 +36,7 @@ $error = false;
 						} else {
 							$error = true;
 							$error_cur = "Uživatel neexistuje.";
-							foreach ($db as $curElem) {
+							foreach ($db["users"] as $curElem) {
 								if (($curElem["username"] ?? "") === $username) {
 									$error = false;
 									unset($error_cur);

@@ -8,12 +8,11 @@ function exceptions_error_handler($severity, $message, $filename, $lineno) {
 
 set_error_handler('exceptions_error_handler');
 
-$userdb_location = "users.csv";
-$contentdb_location = "content.csv";
-$content_location = "content/";
-$accessCountPath = "accesses";
-
 require_once "db.php";
+
+$db_location = ".phpdb";
+
+$db = load_db($db_location);
 
 function htmlTag(string $element, string $content = "", array $params = [], string $endOffsetString = "") : string {
 	$paramsString = "";
@@ -75,15 +74,9 @@ function htmlTags(int $offset = 0, array $content = []) {
 
 $defaultScheme = "latte";
 
-try {
-	$accesses = (int) file_get_contents($accessCountPath);
-} catch(e) {
-	$accesses = 0;
-	file_put_contents($accessCountPath, $accesses);
-}
+$accesses = $db["accesses"] ?? 0;
 if (isset($_SESSION["accessed"]) != true) {
 	$accesses += 1;
-	file_put_contents($accessCountPath, $accesses);
 	$_SESSION["accessed"] = true;
 }
 
@@ -305,7 +298,9 @@ function htmlHeader($excludedButtons = []) {
 	)]);
 }
 function htmlFooter() {
-	global $accesses;
+	global $accesses,
+		   $db,
+		   $db_location;
 
 	$visit = $accesses == 1 ? "Navštívil" : ($accesses > 1 && $accesses < 5 ? "Navštívily" : "Navštívilo");
 	$people = $accesses == 1 ? "člověk" : ($accesses > 1 && $accesses < 5 ? "lidi" : "lidí");
@@ -356,8 +351,17 @@ function htmlFooter() {
 		)
 	)]);
 
-	function contentId() {
-		return md5(($_SESSION["username"] ?? "") . time());
-	}
+	save_db($db, $db_location);
+}
+
+function contentId() {
+	return md5(($_SESSION["username"] ?? "") . time());
+}
+
+function redirect($location) {
+	global $db,
+		   $db_location;
+	save_db($db, $db_location);
+	header("Location: $location");
 }
 ?>

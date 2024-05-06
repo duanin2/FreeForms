@@ -21,15 +21,13 @@ htmlHead("Editor formuláře", array(
 ?>
 		<main>
 			<?php
-			$contentDB = load_db($contentdb_location);
-
 			$contentId = $_POST["id"] ?? ($_GET["id"] ?? "");
 			if (isset($_POST["save"])) {
 				if ($contentId === "") {
 					$curTime = time();
 					$contentId = md5(($_SESSION["username"] ?? "") . $curTime);
 
-					array_push($contentDB, array(
+					array_push($db["content"], array(
 						"name" => $_POST["name"],
 						"id" => $contentId,
 						"creationDate" => $curTime,
@@ -37,12 +35,12 @@ htmlHead("Editor formuláře", array(
 						"sharedWith" => ""
 					));
 				} else {
-					foreach ($contentDB as $key => $content) {
+					foreach ($db["content"] as $key => $content) {
 						if ($content["id"] === $contentId) {
-							$contentDB[$key] = array(
+							$db["content"][$key] = array(
 								"name" => $_POST["name"],
 								"id" => $contentId,
-								"creationDate" => $contentDB[$key]["creationDate"],
+								"creationDate" => $db["content"][$key]["creationDate"],
 								"username" => $_SESSION["username"],
 								"sharedWith" => ""
 							);
@@ -50,14 +48,13 @@ htmlHead("Editor formuláře", array(
 						}
 					}
 				}
-				save_db($contentdb_location, $contentDB);
 
-				header("Location: ./fileEdit.php?id=$contentId");
+				redirect("./fileEdit.php?id=$contentId");
 			}
 
 			$content = [];
 			$contentKey = "";
-			foreach ($contentDB as $loopKey => $loopContent) {
+			foreach ($db["content"] as $loopKey => $loopContent) {
 				if (($loopContent["id"] ?? "") === $contentId) {
 					$content = $loopContent;
 					$contentKey = $loopKey;

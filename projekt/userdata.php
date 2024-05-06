@@ -14,12 +14,10 @@ if ($isLoggedIn) {
 		<main>
 			<h1>O uživateli</h1>
 			<?php
-			$userDB = load_db($userdb_location);
-
-			foreach ($userDB as $loopKey => $loopUser) {
-				if ($loopUser["username"] = $_SESSION["username"]) {
-					$user = $loopUser;
-					$key = $loopKey;
+			foreach ($db["users"] as $loopKey => $loopUser) {
+				if ($loopKey = $_SESSION["username"]) {
+					$userdata = $loopUser;
+					$username = $loopKey;
 					break;
 				}
 			}
@@ -28,13 +26,12 @@ if ($isLoggedIn) {
 				$newScheme = $_POST["scheme"];
 
 				if ($newScheme === "latte" || $newScheme === "frappe" || $newScheme === "macchiato" || $newScheme === "mocha") {
-					if ($user["scheme"] != $newScheme) {
-						$userDB[$key]["scheme"] = $newScheme;
-						save_db($userdb_location, $userDB);
+					if ($userdata["scheme"] != $newScheme) {
+						$db["users"][$username]["scheme"] = $newScheme;
 						$_SESSION["scheme"] = $newScheme;
 					}
 
-					header("Location: .");
+					redirect(".");
 				}
 			}
 			?>
@@ -42,28 +39,28 @@ if ($isLoggedIn) {
 				<table>
 					<tr>
 						<td>Uživatelské jméno</td>
-						<td><?php echo $user["username"]; ?></td>
+						<td><?php echo $username; ?></td>
 					</tr>
 					<tr>
 						<td>Jméno</td>
-						<td><?php echo $user["firstName"]; ?></td>
+						<td><?php echo $userdata["firstName"]; ?></td>
 					</tr>
 					<tr>
 						<td>Příjmení</td>
-						<td><?php echo $user["lastName"]; ?></td>
+						<td><?php echo $userdata["lastName"]; ?></td>
 					</tr>
 					<tr>
 						<td>E-mail</td>
-						<td><?php echo $user["email"]; ?></td>
+						<td><?php echo $userdata["email"]; ?></td>
 					</tr>
 					<tr>
 						<td>Barevné téma</td>
 						<td>
 							<select name="scheme" id="scheme">
-								<option value="latte" <?php if ($user["scheme"] === "latte") echo "selected"; ?>>Catppuccin Latte</option>
-								<option value="frappe" <?php if ($user["scheme"] === "frappe") echo "selected"; ?>>Catppuccin Frappe</option>
-								<option value="macchiato" <?php if ($user["scheme"] === "macchiato") echo "selected"; ?>>Catppuccin Macchiato</option>
-								<option value="mocha" <?php if ($user["scheme"] === "mocha") echo "selected"; ?>>Catppuccin Mocha</option>
+								<option value="latte" <?php if ($userdata["scheme"] === "latte") echo "selected"; ?>>Catppuccin Latte</option>
+								<option value="frappe" <?php if ($userdata["scheme"] === "frappe") echo "selected"; ?>>Catppuccin Frappe</option>
+								<option value="macchiato" <?php if ($userdata["scheme"] === "macchiato") echo "selected"; ?>>Catppuccin Macchiato</option>
+								<option value="mocha" <?php if ($userdata["scheme"] === "mocha") echo "selected"; ?>>Catppuccin Mocha</option>
 							</select>
 						</td>
 					</tr>

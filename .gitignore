@@ -1,3 +1,2 @@
 .direnv/*
-projekt/accesses
-projekt/*.csv
+projekt/*.phpdb
