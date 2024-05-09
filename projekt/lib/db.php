@@ -19,14 +19,12 @@ function load_db($db_location) {
         throw new Exception("$db_location is a directory.");
     }
 
-    $contents = unserialize(file_get_contents($db_location));
-
-    return $contents;
+    return unserialize(file_get_contents($db_location));
 }
 
 # Saves loaded database $db_data into the file $db_location
 function save_db($db_location, $db_data) {
-    echo $db_location;
+    echo is_writeable($db_location);
     if (!isset($db_location) or $db_location === "") {
         throw new Exception("Location cannot be empty.");
     } else if (!is_writeable($db_location)) {

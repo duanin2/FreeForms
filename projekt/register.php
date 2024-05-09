@@ -178,12 +178,9 @@ $error = false;
 								"isAdmin" => "false"
 							);
 
+							array_key_exists($newElemId, $db["users"]);
 							foreach ($db["users"] as $key => $elem) {
-								if (($key ?? "") === $newElemId) {
-									$error_cur = "Uživatel již existuje.";
-									$error = true;
-									break;
-								} elseif (($elem["email"] ?? "") === $newElem["email"]) {
+								if (($elem["email"] ?? "") === $newElem["email"]) {
 									$error_cur = "Tento e-mail byl již použit.";
 									$error = true;
 									break;

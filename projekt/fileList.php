@@ -18,10 +18,12 @@
 				$sharedContent = [];
 
 				if ($isLoggedIn) {
-					foreach ($db["content"] as $content) {
+					foreach ($db["content"] as $id => $content) {
 						if (($content["username"] ?? "") == $username) {
+							$content["id"] = $id;
 							array_push($userContent, $content);
 						} elseif (array_search($username, $content["sharedWith"] ?? [])) {
+							$content["id"] = $id;
 							array_push($sharedContent, $content);
 						}
 					}

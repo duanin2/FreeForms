@@ -10,9 +10,46 @@ set_error_handler('exceptions_error_handler');
 
 require_once "db.php";
 
-$db_location = ".phpdb";
+$db_location = $_SERVER["DOCUMENT_ROOT"] . dirname($_SERVER['REQUEST_URI']) . DIRECTORY_SEPARATOR . "phpdb";
+echo $db_location;
 
 $db = load_db($db_location);
+if (gettype($db) !== "array") {
+	$db = array(
+		"users" => array(),
+		"content" => array(),
+		"accesses" => 0
+	);
+} 
+
+$defaultScheme = "latte";
+
+$db["accesses"] = $db["accesses"] ?? 0;
+if (isset($_SESSION["accessed"]) != true) {
+	$db["accesses"] += 1;
+	$_SESSION["accessed"] = true;
+}
+
+$isLoggedIn = isset($_SESSION["username"]) && $_SESSION["username"] != null;
+$isAdmin = false;
+$scheme = $defaultScheme;
+if ($isLoggedIn) {
+	$username = $_SESSION["username"];
+
+	$isAdmin = ($_SESSION["isAdmin"] ?? $db["users"][$username]["isAdmin"]) ?? false;
+	$_SESSION["isAdmin"] = $isAdmin;
+	
+	$scheme = ($_SESSION["scheme"] ?? $db["users"][$username]["scheme"]) ?? $defaultScheme;
+	$_SESSION["scheme"] = $scheme;
+}
+
+if (isset($_GET["logout"])) {
+	unset($_SESSION["username"]);
+	unset($_SESSION["scheme"]);
+	unset($_SESSION["isAdmin"]);
+
+	redirect("./");
+}
 
 function htmlTag(string $element, string $content = "", array $params = [], string $endOffsetString = "") : string {
 	$paramsString = "";
@@ -72,37 +109,6 @@ function htmlTags(int $offset = 0, array $content = []) {
 	return $result;
 }
 
-$defaultScheme = "latte";
-
-$accesses = $db["accesses"] ?? 0;
-if (isset($_SESSION["accessed"]) != true) {
-	$accesses += 1;
-	$_SESSION["accessed"] = true;
-}
-
-$isLoggedIn = isset($_SESSION["username"]) && $_SESSION["username"] != null;
-if (isset($_SESSION["isAdmin"])) {
-	$isAdmin = filter_var($_SESSION["isAdmin"] ?? false, FILTER_VALIDATE_BOOLEAN);
-} elseif ($isLoggedIn) {
-	foreach (load_db($userdb_location) as $user) {
-		if ($user["username"] === $_SESSION["username"]) {
-			$isAdmin = filter_var($user["isAdmin"] ?? false, FILTER_VALIDATE_BOOLEAN);
-			$_SESSION["isAdmin"] = $user["isAdmin"] ?? "false";
-			break;
-		}
-	}
-} else {
-	$isAdmin = false;
-}
-
-if (isset($_GET["logout"])) {
-	unset($_SESSION["username"]);
-	unset($_SESSION["scheme"]);
-	unset($_SESSION["isAdmin"]);
-
-	header("Location: ./");
-}
-
 $buttons = array(
 	"register" => array(
 		"href" => "./register.php",
@@ -127,23 +133,7 @@ $buttons = array(
 );
 
 function htmlHead(string $title, array $extraTags = []) {
-	global
-		$userdb_location,
-		$defaultScheme,
-		$isLoggedIn;
-
-	if (isset($_SESSION["scheme"])) {
-		$scheme = $_SESSION["scheme"];
-	} elseif ($isLoggedIn) {
-		foreach (load_db($userdb_location) as $user) {
-			if (($user["username"] ?? "") == $_SESSION["username"]) {
-				$scheme = $user["scheme"] ?? $defaultScheme;
-				$_SESSION["scheme"] = $scheme;
-			}
-		}
-	} else {
-		$scheme = $defaultScheme;
-	}
+	global $scheme;
 
 	$finalTags = array(
 		"element" => "head",
@@ -154,7 +144,7 @@ function htmlHead(string $title, array $extraTags = []) {
 				@licstart  The following is the entire license notice for the 
 				JavaScript code in this page.
 
-				Copyright (C) 2014  Loic J. Duros
+				Copyright (C) 2024 Dušan Till
 
 				The JavaScript code in this page is free software: you can
 				redistribute it and/or modify it under the terms of the GNU
@@ -241,7 +231,8 @@ function htmlHead(string $title, array $extraTags = []) {
 	echo htmlTags(1, [$finalTags]);
 }
 function htmlHeader($excludedButtons = []) {
-	global $buttons;
+	global $buttons,
+		   $scheme;
 	if (gettype($excludedButtons) === "string") {
 		$excludedButtons = [ $excludedButtons ];
 	}
@@ -351,7 +342,7 @@ function htmlFooter() {
 		)
 	)]);
 
-	save_db($db, $db_location);
+	save_db($db_location, $db);
 }
 
 function contentId() {
@@ -361,7 +352,7 @@ function contentId() {
 function redirect($location) {
 	global $db,
 		   $db_location;
-	save_db($db, $db_location);
+	save_db($db_location, $db);
 	header("Location: $location");
 }
 ?>

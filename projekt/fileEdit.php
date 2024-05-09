@@ -27,13 +27,12 @@ htmlHead("Editor formuláře", array(
 					$curTime = time();
 					$contentId = md5(($_SESSION["username"] ?? "") . $curTime);
 
-					array_push($db["content"], array(
+					$db["content"][$contentId] = array(
 						"name" => $_POST["name"],
-						"id" => $contentId,
 						"creationDate" => $curTime,
 						"username" => $_SESSION["username"],
 						"sharedWith" => ""
-					));
+					);
 				} else {
 					foreach ($db["content"] as $key => $content) {
 						if ($content["id"] === $contentId) {

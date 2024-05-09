@@ -4,12 +4,7 @@ require_once "lib/common.php";
 $id = $_POST["id"] ?? ($_GET["id"] ?? "");
 
 if ($id !== "") {
-	foreach ($db["content"] as $key => $content) {
-		if ($content["id"] === $id) {
-			unset($db["content"][$key]);
-			break;
-		}
-	}
+	unset($db["content"][$id]);
 
 	redirect("./fileList.php");
 }

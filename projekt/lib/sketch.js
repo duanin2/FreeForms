@@ -13,6 +13,8 @@ let endConnector;
 let width;
 let height;
 
+let uiState = "form";
+
 const headerHeight = 20;headerHeight
 
 function removeIdx(array, idx) {
@@ -343,6 +345,28 @@ class Node {
 	}
 }
 
+function drawUi() {
+  switch (uiState) {
+    case "form":
+      push();
+      fill(98, 104, 128);
+      noStroke();
+      rect(width/3*2,0,width/3,height);
+      pop();
+      break;
+    case "node":
+      push();
+      fill(98, 104, 128);
+      noStroke();
+      rect(width/3*2,0,width/3,height);
+      pop();
+      break;
+    default:
+      throw new Error("Invalid uiState");
+      break;
+  }
+}
+
 function setup() {
 	width = documentWidth() * 0.95 - 40;
 	height = documentHeight() - documentHeight() * 0.20 - 70;
@@ -393,13 +417,9 @@ function draw() {
     line(connectors[endConnector].X, connectors[endConnector].Y, mouseX, mouseY);
   }
 
-  if (selectedNode != undefined) {
-    push();
-    fill(98, 104, 128);
-    noStroke();
-    rect(width/3*2,0,width/3,height);
-    pop();
-  }
+
+  uiState = selectedNode != undefined ? "node" : "form";
+  drawUi();
 }
 
 function mouseDragged() {
