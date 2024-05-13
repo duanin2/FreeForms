@@ -345,83 +345,14 @@ class Node {
     }
 }
 
-class UIElement {
-    #x;
-    #y;
-    #width;
-    #height;
-
-    #currentState = "default";
-    #states = {
-	default: {}
-    };
-
-    constructor(x, y, width = 40, height = 40, color = new p5.Color(255, 255, 255)) {
-	this.#x = x;
-	this.#y = y;
-
-	this.#width = width;
-	this.#height = height;
-
-	this.states.default.color = color;
-    }
-
-    onClick(x, y) {}
-    isWithin(x, y) {
-	return (x >= this.#x && y >= this.#y) && (x <= this.#x + this.#width && y <= this.#y + this.#height);
-    }
-    
-    draw() {
-	const currentState = this.#states[this.#currentState];
-	push();
-	fill(currentState.color);
-	noStroke();
-	rect(this.#x, this.#y, this.#x + this.#width, this.#y + this.#height);
-	pop();
-    }
-}
-
-class UI extends UIElement {
-    #currentState = "form";
-    #states = {
-	form: {
-	    elements: []
-	},
-	node: {
-	    elements: []
-	}
-    };
-
-    constructor(x, y, width, height, formColor = new p5.Color(255, 255, 255), nodeColor = undefined) {
-	super(x, y, width, height);
-
-	this.states.form.color = formColor;
-	this.states.node.color = nodeColor == undefined ? formColor : nodeColor;
-    }
-
-    onClick(x, y) {
-	const currentState = this.#states[this.#currentState];
-
-	for (let i = 0; i < currentState.elements.length; i++) {
-	    if (currentState.elements[i].isWithin(x, y)) {
-		currentState.elements[i].onClick(x, y);
-	    }
-	}
-    }
-
-    draw() {
-	super.draw();
-
-	
-    }
-}
-
 function setup() {
     width = documentWidth() * 0.95 - 40;
     height = documentHeight() - documentHeight() * 0.20 - 70;
     createCanvas(width, height, document.getElementById('p5jsCanvas'));
 
-    ui = new UI(width/3*2, 0, width/3, height, new p5.Color(98, 104, 128), new p5.Color(98, 104, 128));
+	colorMode(RGB, 255);
+
+    ui = new UI(0, 0, width, height);
     
     // Start node
     nodes.push(new Node(70, height / 2 - 20, "Start"));
@@ -551,7 +482,7 @@ function selectOption() {
     
     /*
     if (options.value != -1) {
-	option.value = nodeOptions[options.value].Name;
+		option.value = nodeOptions[options.value].Name;
     }
     */
 }
@@ -559,23 +490,23 @@ function selectOption() {
 function renameOption() {
     /*
     if (options.value == -1) {
-	nodes[selectedNode].addOption(option.value);
+		nodes[selectedNode].addOption(option.value);
     } else {
-	nodes[selectedNode].Options[options.value].Name = option.value;
+		nodes[selectedNode].Options[options.value].Name = option.value;
     }
     
     options.innerHTML = "";
     const nodeOptions = nodes[selectedNode].Options;
     for (let i = -1; i < nodeOptions.length; i++) {
-	let loopOption = document.createElement("option");
-	loopOption.value = i;
-	if (i == -1) {
-	    loopOption.innerHTML = "None";
-	    loopOption.selected = true;
-	} else {
-	    loopOption.innerHTML = nodeOptions[i].Name;
-	}
-	options.appendChild(loopOption);
+		let loopOption = document.createElement("option");
+		loopOption.value = i;
+		if (i == -1) {
+			loopOption.innerHTML = "None";
+			loopOption.selected = true;
+		} else {
+			loopOption.innerHTML = nodeOptions[i].Name;
+		}
+		options.appendChild(loopOption);
     }
     */
 }

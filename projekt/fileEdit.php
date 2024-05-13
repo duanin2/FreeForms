@@ -8,6 +8,12 @@ htmlHead("Editor formuláře", array(
 		"params" => array(
 			"src" => "./lib/sketch.js"
 		)
+	),
+	array(
+		"element" => "script",
+		"params" => array(
+			"src" => "./lib/ui.js"
+		)
 	)
 ));
 ?>
