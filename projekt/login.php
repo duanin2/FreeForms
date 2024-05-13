@@ -1,19 +1,12 @@
 <?php
 require_once "lib/common.php";
 
-if (count($_POST) != 0) {
-	$username = $_POST["username"];
-	$pass = $_POST["pass"];
+$username = $_POST["username"] ?? "";
+$pass = $_POST["pass"] ?? "";
 
-	$isPost = true;
+$elem = array();
 
-	$elem = array();
-} else {
-	$username = "";
-	$pass = "";
-
-	$isPost = false;
-}
+$isPost = count($_POST) != 0;
 
 $error = false;
 ?>
@@ -31,20 +24,17 @@ $error = false;
 					if ($isPost) {
 						if ($username === "") {
 							$error = true;
-
 							$error_cur = "Uživatelské jméno nesmí být prázdné.";
 						} else {
-							$error = true;
-							$error_cur = "Uživatel neexistuje.";
-							foreach ($db["users"] as $curElem) {
-								if (($curElem["username"] ?? "") === $username) {
-									$error = false;
-									unset($error_cur);
+                            if (isset($db["users"][$username])) {
+                                $elem = $db["users"][$username];
 
-									$elem = $curElem;
-									break;
-								}
-							}
+                                $error = false;
+                                unset($error_cur);
+                            } else {
+                                $error = true;
+                                $error_cur = "Uživatel neexistuje.";
+                            }
 						}
 					}
 
@@ -62,11 +52,9 @@ $error = false;
 					if ($isPost) {
 						if ($pass === "") {
 							$error = true;
-
 							$error_cur = "Heslo nesmí být prázdné.";
 						} elseif ($elem != array() && ($elem["pass"] ?? "") != $pass) {
 							$error = true;
-
 							$error_cur = "Nesprávné heslo.";
 						}
 					}
@@ -84,7 +72,7 @@ $error = false;
 						if ($isPost && !$error) {
 							$_SESSION["username"] = $username;
 
-							header('Location: ./');
+						    redirect('./');
 						}
 						?>
 					</tr>

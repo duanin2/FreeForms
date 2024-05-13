@@ -14,14 +14,7 @@ if ($isLoggedIn) {
 		<main>
 			<h1>O uživateli</h1>
 			<?php
-			$userdata = 
-			foreach ($db["users"] as $loopKey => $loopUser) {
-				if ($loopKey = $_SESSION["username"]) {
-					$userdata = $loopUser;
-					$username = $loopKey;
-					break;
-				}
-			}
+			$userdata = $db["users"][$_SESSION["username"]];
 
 			if (isset($_POST["scheme"])) {
 				$newScheme = $_POST["scheme"];

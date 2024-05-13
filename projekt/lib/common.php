@@ -11,7 +11,6 @@ set_error_handler('exceptions_error_handler');
 require_once "db.php";
 
 $db_location = $_SERVER["DOCUMENT_ROOT"] . dirname($_SERVER['REQUEST_URI']) . DIRECTORY_SEPARATOR . "phpdb";
-echo $db_location;
 
 $db = load_db($db_location);
 if (gettype($db) !== "array") {
